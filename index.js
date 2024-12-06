@@ -49,6 +49,15 @@ async function run() {
       // console.log(result);
     })
 
+
+    // get all watchlist data from database
+    app.get('/watchlist', async(req, res) => {
+      const cursor = watchListCollection.find();
+      const watchlist = await cursor.toArray();
+      res.send(watchlist);
+    })
+
+
  // probably the best function i wrote in this project
    // post a favorite movie to the watchlist
 app.post('/watchlist', async (req, res) => {
