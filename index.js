@@ -49,13 +49,44 @@ async function run() {
       // console.log(result);
     })
 
-    // post a favorite movie to watchlist
-    app.post('/watchlist', async(req, res) => {
-      const review = req.body;
-      const result = await watchListCollection.insertOne(review);
-      res.send(result);
-      console.log(result);
-    })
+ // probably the best function i wrote in this project
+   // post a favorite movie to the watchlist
+app.post('/watchlist', async (req, res) => {
+  const watchListGameData = req.body;
+
+  // query to check user and game is unique in the watchlist
+  const query = {
+    myEmail: watchListGameData.myEmail,
+    gameTitle: watchListGameData.gameTitle
+  };
+
+  try {
+    // Check the duplicay of the entry
+    const existingEntry = await watchListCollection.findOne(query);
+
+    if (existingEntry) {
+      return res.status(400).json({
+        success: false,
+        message: 'This game is already in your watchlist.',
+      });
+    }
+
+    // If not, insert the new data
+    const result = await watchListCollection.insertOne(watchListGameData);
+    res.status(201).json({
+      success: true,
+      message: 'Game added to watchlist successfully!',
+      data: result,
+    });
+  } catch (error) {
+    console.error('Error adding to watchlist:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while adding to the watchlist.',
+    });
+  }
+});
+
 
     //getting all reviews from database
     app.get('/reviews', async(req, res) => {
