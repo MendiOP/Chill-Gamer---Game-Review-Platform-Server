@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 const app = express();
@@ -18,7 +19,7 @@ app.get('/', (req, res) => {
 // tempuser
 // user123
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+
 const uri = "mongodb+srv://tempuser:user123@cluster0.twtdx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -34,9 +35,27 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    const database = client.db("reviewsDB");
-    const reviewsCollection = database.collection("reviews");
+    // const database = client.db("reviewsDB");
+    const reviewsCollection = client.db("reviewsDB").collection("reviews");
+    const watchListCollection = client.db("reviewsDB").collection("watchlist");
 
+
+    // get a single review by id
+    app.get('/reviews/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id : ObjectId(id)};
+      const result = await reviewsCollection.findOne(query);
+      res.send(result);
+      // console.log(result);
+    })
+
+    // post a favorite movie to watchlist
+    app.post('/watchlist', async(req, res) => {
+      const review = req.body;
+      const result = await watchListCollection.insertOne(review);
+      res.send(result);
+      console.log(result);
+    })
 
     //getting all reviews from database
     app.get('/reviews', async(req, res) => {
@@ -51,9 +70,20 @@ async function run() {
 
       const result = await reviewsCollection.insertOne(review);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     })
 
+
+    // getting user's own reviews from database
+    app.get('/myReviews', async(req, res) => {
+      const email = req.query.email;
+      const query = {userEmail : email};
+
+      const cursor = reviewsCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+      console.log(reviews);
+    })
 
 
     // Send a ping to confirm a successful connection
