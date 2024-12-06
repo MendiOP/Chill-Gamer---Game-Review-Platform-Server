@@ -85,6 +85,43 @@ async function run() {
       console.log(reviews);
     })
 
+    // getting user review
+    app.get('/updateReview/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id : ObjectId(id)};
+
+      const result = await reviewsCollection.findOne(query);
+      res.send(result);
+    })
+
+    // updating a review by id
+    app.put('/updateReview/:id', async(req, res) => {
+      const id = req.params.id;
+      const review = req.body;
+      const query = {_id : ObjectId(id)};
+      const update = {
+        $set: {
+          gameCover: review.gameCover,
+          gameTitle: review.gameTitle,
+          reviewDescription: review.reviewDescription,
+          rating: review.rating,
+          genre: review.genre,
+        }
+      }
+      const result = await reviewsCollection.updateOne(query, update);
+      res.send(result);
+      console.log(result);
+    })
+
+    //delete a review by id
+    app.delete('/deleteReview/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id : ObjectId(id)};
+      const result = await reviewsCollection.deleteOne(query);
+      res.send(result);
+      console.log(result);
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
