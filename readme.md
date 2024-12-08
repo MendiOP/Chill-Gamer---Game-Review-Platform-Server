@@ -27,8 +27,7 @@ The server provides endpoints to:
 ### 1️⃣ Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd <repository-directory>
+git clone https://github.com/programming-hero-web-course2/b10-a10-server-side-MendiOP.git
 
 2️⃣ Install dependencies:
 
