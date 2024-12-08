@@ -92,6 +92,17 @@ app.post('/watchlist', async (req, res) => {
 });
 
 
+
+
+app.get('/reviews', async (req, res) => {
+  const genre = req.query.genre;
+  const query = genre && genre !== "default" ? { genre: genre } : {};  
+  const cursor = reviewsCollection.find(query);
+  const reviews = await cursor.toArray();
+  res.send(reviews);
+});
+
+
     //getting all reviews from database
     app.get('/reviews', async(req, res) => {
       const cursor = reviewsCollection.find();
