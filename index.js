@@ -40,7 +40,7 @@ async function run() {
     // get a single review by id
     app.get('/reviews/:id', async(req, res) => {
       const id = req.params.id;
-      const query = {_id : ObjectId(id)};
+      const query = {_id : new ObjectId(id)};
       const result = await reviewsCollection.findOne(query);
       res.send(result);
       // console.log(result);
@@ -136,7 +136,7 @@ app.get('/reviews', async (req, res) => {
     // getting user review
     app.get('/updateReview/:id', async(req, res) => {
       const id = req.params.id;
-      const query = {_id : ObjectId(id)};
+      const query = {_id : new ObjectId(id)};
 
       const result = await reviewsCollection.findOne(query);
       res.send(result);
@@ -146,7 +146,7 @@ app.get('/reviews', async (req, res) => {
     app.put('/updateReview/:id', async(req, res) => {
       const id = req.params.id;
       const review = req.body;
-      const query = {_id : ObjectId(id)};
+      const query = {_id : new ObjectId(id)};
       const update = {
         $set: {
           gameCover: review.gameCover,
@@ -164,7 +164,7 @@ app.get('/reviews', async (req, res) => {
     //delete a review by id
     app.delete('/deleteReview/:id', async(req, res) => {
       const id = req.params.id;
-      const query = {_id : ObjectId(id)};
+      const query = {_id : new ObjectId(id)};
       const result = await reviewsCollection.deleteOne(query);
       res.send(result);
       console.log(result);
